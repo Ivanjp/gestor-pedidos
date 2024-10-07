@@ -7,8 +7,8 @@ import java.util.List;
 public interface ICustomerService {
 
     List<CustomerDTO> getCustomers();
-    CustomerDTO getCustomerById(Long id);
-    CustomerDTO createCustomer(CustomerDTO customer);
-    CustomerDTO updateCustomer(Long id, CustomerDTO customer);
-    void deleteCustomer(Long id);
+    CustomerDTO getCustomerById(Long customerId);
+    CustomerDTO createCustomer(CustomerDTO customerDTO);
+    CustomerDTO updateCustomer(Long customerId, CustomerDTO customerDTO);
+    void deleteCustomer(Long customerId);
 }

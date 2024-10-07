@@ -28,17 +28,17 @@ public class CustomerService implements ICustomerService {
     }
 
     @Override
-    public CustomerDTO getCustomerById(Long id) {
+    public CustomerDTO getCustomerById(Long customerId) {
 
-        CustomerModel customerModel = repository.findById(id).orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Customer not found"));
+        CustomerModel customerModel = repository.findById(customerId).orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Customer not found"));
         return convertToDTO(customerModel);
 
     }
 
     @Override
-    public CustomerDTO createCustomer(@Valid CustomerDTO customer) {
+    public CustomerDTO createCustomer(@Valid CustomerDTO customerDTO) {
 
-        CustomerModel customerModel = convertToModel(customer);
+        CustomerModel customerModel = convertToModel(customerDTO);
 
         CustomerModel newCustomer = repository.save(customerModel);
 
@@ -47,25 +47,25 @@ public class CustomerService implements ICustomerService {
     }
 
     @Override
-    public CustomerDTO updateCustomer(Long id, @Valid CustomerDTO customer) {
+    public CustomerDTO updateCustomer(Long customerId, @Valid CustomerDTO customerDTO) {
 
-        CustomerModel customerModel = repository.findById(id)
+        CustomerModel customerModel = repository.findById(customerId)
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Customer not found"));
 
-        if (customer.getNombre() != null) {
-            customerModel.setNombre(customer.getNombre());
+        if (customerDTO.getNombre() != null) {
+            customerModel.setNombre(customerDTO.getNombre());
         }
 
-        customerModel.setApellidoMaterno(customer.getApellidoMaterno());
+        customerModel.setApellidoMaterno(customerDTO.getApellidoMaterno());
 
-        if (customer.getApellidoPaterno() != null) {
-            customerModel.setApellidoPaterno(customer.getApellidoPaterno());
+        if (customerDTO.getApellidoPaterno() != null) {
+            customerModel.setApellidoPaterno(customerDTO.getApellidoPaterno());
         }
 
-        customerModel.setMail(customer.getMail());
+        customerModel.setMail(customerDTO.getMail());
 
-        if (customer.getDireccionEnvio() != null) {
-            customerModel.setDireccionEnvio(customer.getDireccionEnvio());
+        if (customerDTO.getDireccionEnvio() != null) {
+            customerModel.setDireccionEnvio(customerDTO.getDireccionEnvio());
         }
 
         CustomerModel updatedCustomer = repository.save(customerModel);
@@ -76,13 +76,13 @@ public class CustomerService implements ICustomerService {
     }
 
     @Override
-    public void deleteCustomer(Long id) {
+    public void deleteCustomer(Long customerId) {
 
-        if (!repository.existsById(id)) {
+        if (!repository.existsById(customerId)) {
             throw new ApiException(HttpStatus.NOT_FOUND, "Customer not found");
         }
 
-        repository.deleteById(id);
+        repository.deleteById(customerId);
     }
 
     private CustomerDTO convertToDTO(CustomerModel model){

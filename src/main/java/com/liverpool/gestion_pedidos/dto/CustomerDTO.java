@@ -1,10 +1,10 @@
 package com.liverpool.gestion_pedidos.dto;
 
-import io.swagger.v3.oas.annotations.media.Schema;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
 
 public class CustomerDTO {
-    @Schema(hidden = true)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
     @NotNull(message = "El nombre no puede ser nulo")
     private String nombre;

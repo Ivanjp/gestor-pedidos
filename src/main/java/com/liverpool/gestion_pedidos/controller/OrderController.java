@@ -3,8 +3,11 @@ package com.liverpool.gestion_pedidos.controller;
 import com.liverpool.gestion_pedidos.dto.OrderDTO;
 import com.liverpool.gestion_pedidos.dto.OrderQuantityDTO;
 import com.liverpool.gestion_pedidos.exception.ApiException;
+import com.liverpool.gestion_pedidos.exception.ExceptionResponse;
 import com.liverpool.gestion_pedidos.service.IOrderService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
@@ -25,8 +28,8 @@ public class OrderController {
     @Operation(summary = "Obtener los pedidos existentes")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Pedidos encontrados"),
-            @ApiResponse(responseCode = "404", description = "Pedidos no encontrados"),
-            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+            @ApiResponse(responseCode = "404", description = "Pedidos no encontrados", content = @Content(schema = @Schema(implementation = ExceptionResponse.class))),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor", content = @Content(schema = @Schema(implementation = ExceptionResponse.class)))
     })
     @GetMapping
     public ResponseEntity<List<OrderDTO>> getOrders() {
@@ -42,14 +45,14 @@ public class OrderController {
 
     @Operation(summary = "Obtener pedido por ID")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Pedido encontrado"),
-            @ApiResponse(responseCode = "404", description = "Pedido no encontrado"),
-            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+            @ApiResponse(responseCode = "200", description = "Pedido encontrado", content = @Content(schema = @Schema(implementation = OrderDTO.class))),
+            @ApiResponse(responseCode = "404", description = "Pedido no encontrado", content = @Content(schema = @Schema(implementation = ExceptionResponse.class))),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor", content = @Content(schema = @Schema(implementation = ExceptionResponse.class)))
     })
     @GetMapping("/{id}")
-    public ResponseEntity<OrderDTO> getOrderById(@PathVariable("id") Long id) {
+    public ResponseEntity<OrderDTO> getOrderById(@PathVariable("id") Long orderId) {
         try{
-            return new ResponseEntity<>(service.getOrderById(id), HttpStatus.OK);
+            return new ResponseEntity<>(service.getOrderById(orderId), HttpStatus.OK);
         }catch (ApiException e) {
             throw e;
         } catch (Exception e) {
@@ -61,13 +64,13 @@ public class OrderController {
     @Operation(summary = "Obtener los pedidos de un cliente mediante su ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Pedidos encontrados"),
-            @ApiResponse(responseCode = "404", description = "Pedidos no encontrados"),
-            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+            @ApiResponse(responseCode = "404", description = "Pedidos no encontrados", content = @Content(schema = @Schema(implementation = ExceptionResponse.class))),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor", content = @Content(schema = @Schema(implementation = ExceptionResponse.class)))
     })
     @GetMapping("customer/{id}")
-    public ResponseEntity<List<OrderDTO>> getOrdersByCustomer(@PathVariable("id") Long id) {
+    public ResponseEntity<List<OrderDTO>> getOrdersByCustomer(@PathVariable("id") Long customerId) {
         try{
-            return new ResponseEntity<>(service.getOrdersByCustomer(id), HttpStatus.OK);
+            return new ResponseEntity<>(service.getOrdersByCustomer(customerId), HttpStatus.OK);
         }catch (ApiException e) {
             throw e;
         } catch (Exception e) {
@@ -77,14 +80,14 @@ public class OrderController {
 
     @Operation(summary = "Crear un pedido")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Pedido creado"),
-            @ApiResponse(responseCode = "404", description = "Pedido no creado"),
-            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+            @ApiResponse(responseCode = "201", description = "Pedido creado", content = @Content(schema = @Schema(implementation = OrderDTO.class))),
+            @ApiResponse(responseCode = "404", description = "Pedido no creado", content = @Content(schema = @Schema(implementation = ExceptionResponse.class))),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor", content = @Content(schema = @Schema(implementation = ExceptionResponse.class)))
     })
     @PostMapping
-    public ResponseEntity<OrderDTO> createOrder(@RequestBody @Valid OrderDTO order) {
+    public ResponseEntity<OrderDTO> createOrder(@RequestBody @Valid OrderDTO orderDTO) {
         try{
-            return new ResponseEntity<>(service.createOrder(order), HttpStatus.CREATED);
+            return new ResponseEntity<>(service.createOrder(orderDTO), HttpStatus.CREATED);
         }catch (ApiException e) {
             throw e;
         } catch (Exception e) {
@@ -94,14 +97,14 @@ public class OrderController {
 
     @Operation(summary = "Actualizar la cantidad de un producto de un pedido")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Cantidad actualizada"),
-            @ApiResponse(responseCode = "404", description = "Cantidad no actualizada"),
-            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+            @ApiResponse(responseCode = "200", description = "Cantidad actualizada", content = @Content(schema = @Schema(implementation = OrderDTO.class))),
+            @ApiResponse(responseCode = "404", description = "Cantidad no actualizada", content = @Content(schema = @Schema(implementation = ExceptionResponse.class))),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor", content = @Content(schema = @Schema(implementation = ExceptionResponse.class)))
     })
     @PutMapping("/{id}/quantity")
-    public ResponseEntity<OrderDTO> updateOrder(@PathVariable Long id, @Valid @RequestBody OrderQuantityDTO cantidad) {
+    public ResponseEntity<OrderDTO> updateOrder(@PathVariable Long orderId, @Valid @RequestBody OrderQuantityDTO cantidad) {
         try{
-            return new ResponseEntity<>(service.updateOrder(id,cantidad), HttpStatus.OK);
+            return new ResponseEntity<>(service.updateOrder(orderId,cantidad), HttpStatus.OK);
         }catch (ApiException e) {
             throw e;
         } catch (Exception e) {
@@ -111,14 +114,14 @@ public class OrderController {
 
     @Operation(summary = "Eliminar un pedido")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Pedido eliminad"),
-            @ApiResponse(responseCode = "404", description = "Pedido no eliminado"),
-            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+            @ApiResponse(responseCode = "204", description = "Pedido eliminado", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Pedido no eliminado", content = @Content(schema = @Schema(implementation = ExceptionResponse.class))),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor", content = @Content(schema = @Schema(implementation = ExceptionResponse.class)))
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<HttpStatus> deleteOrder(@PathVariable("id") Long id) {
+    public ResponseEntity<HttpStatus> deleteOrder(@PathVariable("id") Long orderId) {
         try{
-            service.deleteOrder(id);
+            service.deleteOrder(orderId);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }catch (ApiException e) {
             throw e;

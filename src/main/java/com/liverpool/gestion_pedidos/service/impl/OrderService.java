@@ -33,25 +33,30 @@ public class OrderService implements IOrderService {
     }
 
     @Override
-    public OrderDTO getOrderById(Long id) {
-        OrderModel orderModel = repository.findById(id).orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Order not found"));
+    public OrderDTO getOrderById(Long orderId) {
+        OrderModel orderModel = repository.findById(orderId).orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Order not found"));
         return convertToDTO(orderModel);
     }
 
     @Override
-    public List<OrderDTO> getOrdersByCustomer(Long id) {
-        List<OrderModel> orderModels = repository.findByCustomerId(id);
+    public List<OrderDTO> getOrdersByCustomer(Long customerId) {
+
+        if(!repositoryC.existsById(customerId)){
+            throw new ApiException(HttpStatus.NOT_FOUND, "Customer not found");
+        }
+
+        List<OrderModel> orderModels = repository.findByCustomerId(customerId);
 
         return orderModels.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
     @Override
-    public OrderDTO createOrder(@Valid OrderDTO order) {
+    public OrderDTO createOrder(@Valid OrderDTO orderDTO) {
 
-        CustomerModel customer = repositoryC.findById(order.getCustomerId())
-                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Order not found"));
+        CustomerModel customer = repositoryC.findById(orderDTO.getCustomerId())
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Customer not found"));
 
-        OrderModel orderModel = convertToModel(order,customer);
+        OrderModel orderModel = convertToModel(orderDTO,customer);
 
         OrderModel newOrder = repository.save(orderModel);
 
@@ -59,8 +64,8 @@ public class OrderService implements IOrderService {
     }
 
     @Override
-    public OrderDTO updateOrder(Long id, @Valid OrderQuantityDTO cantidad) {
-        OrderModel orderModel = repository.findById(id)
+    public OrderDTO updateOrder(Long orderId, @Valid OrderQuantityDTO cantidad) {
+        OrderModel orderModel = repository.findById(orderId)
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Order not found "));
 
         orderModel.setCantidad(cantidad.getCantidad());
@@ -71,11 +76,11 @@ public class OrderService implements IOrderService {
     }
 
     @Override
-    public void deleteOrder(Long id) {
-        if (!repository.existsById(id)) {
+    public void deleteOrder(Long orderId) {
+        if (!repository.existsById(orderId)) {
             throw new ApiException(HttpStatus.NOT_FOUND, "Order not found");
         }
-        repository.deleteById(id);
+        repository.deleteById(orderId);
     }
 
     private OrderDTO convertToDTO(OrderModel model){

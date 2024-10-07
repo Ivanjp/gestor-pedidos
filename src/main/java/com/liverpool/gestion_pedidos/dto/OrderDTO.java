@@ -1,12 +1,12 @@
 package com.liverpool.gestion_pedidos.dto;
 
-import io.swagger.v3.oas.annotations.media.Schema;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 public class OrderDTO {
-    @Schema(hidden = true)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
     @NotNull(message = "El codigo de producto no puede ser nulo")
     private String codigoProducto;
