@@ -67,7 +67,7 @@ Este microservicio se encarga de la gestión de **pedidos** y **clientes**, cont
     Para poder visualizar la documentación, accede a esta url desde un navegador:
 
     ```
-    http://localhost:8080/swagger-ui.html
+    http://localhost:8080/swagger-ui/index.html
     ```
 
 ### Ejecutar servicio de forma remota
@@ -80,7 +80,7 @@ Para probar el servicio se debe de hacer mediante la siguiente uri:
 Para poder visualizar la documentación, accede a esta url desde un navegador:
 
 ```
-    https://glistening-solace-production.up.railway.app/swagger-ui.html
+     https://glistening-solace-production.up.railway.app/swagger-ui/index.html
   ```
 
 ## Endpoints
