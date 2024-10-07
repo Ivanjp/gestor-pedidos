@@ -102,7 +102,7 @@ public class OrderController {
             @ApiResponse(responseCode = "500", description = "Error interno del servidor", content = @Content(schema = @Schema(implementation = ExceptionResponse.class)))
     })
     @PutMapping("/{id}/quantity")
-    public ResponseEntity<OrderDTO> updateOrder(@PathVariable Long orderId, @Valid @RequestBody OrderQuantityDTO cantidad) {
+    public ResponseEntity<OrderDTO> updateOrder(@PathVariable("id") Long orderId, @Valid @RequestBody OrderQuantityDTO cantidad) {
         try{
             return new ResponseEntity<>(service.updateOrder(orderId,cantidad), HttpStatus.OK);
         }catch (ApiException e) {
